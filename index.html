@@ -747,7 +747,19 @@ img[alt="Bandera de Argentina"] {
     }
     </script>
 <audio id="hover-sound" preload="auto" src="mixkit-typewriter-soft-click-1125.wav"></audio>
+<script>
+     const hoverSound = document.getElementById('hover-sound');
+  document.body.addEventListener('click', () => {
+    hoverSound.play().catch(() => {});
+  }, { once: true });
 
+  document.querySelectorAll('.item-menu').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      hoverSound.currentTime = 0;
+      hoverSound.play();
+    });
+  });
+    </script>
 <script>
      document.querySelectorAll('.item-menu').forEach(item => {
     item.addEventListener('click', () => {
@@ -1019,9 +1031,34 @@ img[alt="Bandera de Argentina"] {
 </footer>
 <!-- cierre de flex-col min-h-screen -->
 <audio id="hover-sound" preload="auto" src="mixkit-typewriter-soft-click-1125.wav"></audio>
-
+<script>
+   const hoverSound = document.getElementById('hover-sound');
+  document.querySelectorAll('.item-menu').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      hoverSound.currentTime = 0;
+      hoverSound.play().catch(() => {});
+    });
+  });
+  </script>
 <audio id="hover-sound" preload="auto" src="mixkit-typewriter-soft-click-1125.wav"></audio>
+<script>
+   const hoverSound = document.getElementById('hover-sound');
+  let soundEnabled = false;
 
+  // Habilita el sonido con la primera interacción
+  document.body.addEventListener('click', () => {
+    soundEnabled = true;
+  }, { once: true });
+
+  document.querySelectorAll('.item-menu').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      if (soundEnabled) {
+        hoverSound.currentTime = 0;
+        hoverSound.play().catch(() => {});
+      }
+    });
+  });
+  </script>
 <script>
    function validarCuenta() {
   const cuenta = document.getElementById('inputCuenta').value.trim();
@@ -1332,20 +1369,30 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 </script>
 <script>
-document.getElementById("cerrar-sesion").addEventListener("click", function () {
-  // Simula cerrar sesión redirigiendo al login
-  window.location.href = "/login.html";
+document.addEventListener("DOMContentLoaded", function () {
+  const cerrarSesion = document.getElementById("cerrar-sesion");
+  if (cerrarSesion) {
+    cerrarSesion.addEventListener("click", function () {
+      localStorage.removeItem("sesionActiva");
+      document.getElementById("pantalla-login").classList.remove("hidden");
+      document.getElementById("contenido-app").classList.add("hidden");
+    });
+  }
 });
 </script><script>
-document.getElementById("cerrar-sesion").addEventListener("click", function () {
-  // Mostrar la pantalla de login
-  document.getElementById("pantalla-login").classList.remove("hidden");
-  // Ocultar la sección principal de la app
-  document.getElementById("contenido-app").classList.add("hidden");
-});
+function loginConUsuario() {
+  const usuario = document.getElementById("inputUsuario").value;
+  const password = document.getElementById("inputPassword").value;
+  if (usuario === "admin" && password === "1234") {
+    localStorage.setItem("sesionActiva", "true");
+    document.getElementById("pantalla-login").classList.add("hidden");
+    document.getElementById("contenido-app").classList.remove("hidden");
+  } else {
+    alert("Usuario o contraseña incorrectos.");
+  }
+}
 </script>
-<div id="log-visual" style="position: fixed; bottom: 20px; right: 20px; background: #f0f0f0; border: 1px solid #ccc; padding: 1rem; font-family: sans-serif; font-size: 14px; max-width: 300px;"></div>
-
+<div id="log-visual" style="position: fixed; bottom: 20px; right: 20px; background: #f0f0f0; border: 1px solid #ccc; padding: 1rem; font-family: sans-serif; font-size: 14px; max-width: 300px; z-index: 9999;"></div>
 <script>
 function logVisual(msg) {
   const div = document.getElementById("log-visual");
@@ -1403,6 +1450,5 @@ function loginConUsuario() {
     logVisual("❌ Login fallido");
   }
 }
-</script>
-</body>
+</script></body>
 </html>
