@@ -234,10 +234,6 @@ img[alt="Bandera de Argentina"] {
 }
 </style></head>
 <body class="bg-gray-100">
-<audio id="hover-sound">
-<source src="hover.mp3" type="audio/mpeg"/>
-</audio>
-
 <!-- Pantalla de Inicio de Sesión -->
 <div class="fixed inset-0 bg-gray-100 flex items-center justify-center z-50" id="pantalla-login">
 <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md text-left space-y-6 border border-blue-500">
@@ -826,7 +822,98 @@ img[alt="Bandera de Argentina"] {
 </div>
 </div>
 </div>
+<script>
+   function iniciarNuevaSolicitud() {
+    document.getElementById('modalCuenta').classList.remove('hidden');
+    document.getElementById('inputCuenta').value = '';
+    document.getElementById('mensajeCuenta').classList.add('hidden');
+  }
 
+  function cerrarModal() {
+    document.getElementById('modalCuenta').classList.add('hidden');
+  }
+
+  function validarCuenta() {
+  const cuenta = document.getElementById('inputCuenta').value.trim();
+  const mensaje = document.getElementById('mensajeCuenta');
+
+  console.log("Cuenta ingresada:", cuenta);
+
+  if (!cuenta) {
+    mensaje.textContent = "Debe ingresar un número de cuenta.";
+    mensaje.classList.remove('hidden');
+    return;
+  }
+
+  const cuentasConDeuda = ['123', '456', '789'];
+
+  if (cuentasConDeuda.includes(cuenta)) {
+    mensaje.textContent = "La cuenta ingresada posee deuda pendiente. Es necesario regularizar su situación para poder continuar.";
+    mensaje.classList.remove('hidden');
+    console.log("Cuenta con deuda detectada");
+  } else {
+    console.log("Cuenta válida, avanzando a seccion-datos");
+    mensaje.classList.add('hidden');
+    document.getElementById('modalCuenta').classList.add('hidden');
+    document.getElementById('subseccion-tarjetas').classList.add('hidden');
+    document.getElementById('subseccion-formulario').classList.remove('hidden');
+    document.getElementById('cuenta-numero').innerText = cuenta; // ACTUALIZACIÓN DINÁMICA
+    mostrarPestania('domicilio');
+  }
+}
+
+  const cuentasConDeuda = ['123', '456', '789']; // Cuentas con deuda
+
+  if (cuentasConDeuda.includes(cuenta)) {
+    mensaje.textContent = "La cuenta ingresada posee deuda pendiente. Es necesario regularizar su situación para poder continuar.";
+    mensaje.classList.remove('hidden');
+  } else {
+    // Validación correcta: avanzar al formulario
+    mensaje.classList.add('hidden');
+    document.getElementById('modalCuenta').classList.add('hidden');
+    document.getElementById('subseccion-tarjetas').classList.add('hidden');
+    document.getElementById('subseccion-formulario').classList.remove('hidden');
+    mostrarPestania('domicilio');
+  }
+}
+
+    const cuentasConDeuda = ['123', '456', '789'];
+
+    if (cuentasConDeuda.includes(cuenta)) {
+      mensaje.textContent = "La cuenta ingresada posee deuda pendiente. Es necesario regularizar su situación para poder continuar.";
+      mensaje.classList.remove('hidden');
+    } else {
+      
+      console.log("Validación exitosa");
+      mensaje.classList.add('hidden');
+      document.getElementById('modalCuenta').classList.add('hidden');
+      document.getElementById('contenido-app').classList.remove('hidden');
+      const tramite = document.getElementById('seccion-tramite');
+      if (tramite) tramite.classList.add('hidden');
+      const datos = document.getElementById('seccion-datos');
+      if (datos) datos.classList.remove('hidden');
+      mostrarPestania('domicilio');
+
+      
+      
+      console.log("Validación exitosa");
+      mensaje.classList.add('hidden');
+      document.getElementById('modalCuenta').classList.add('hidden');
+      document.getElementById('contenido-app').classList.remove('hidden');
+      const tramite = document.getElementById('seccion-tramite');
+      if (tramite) tramite.classList.add('hidden');
+      const datos = document.getElementById('seccion-datos');
+      if (datos) datos.classList.remove('hidden');
+      mostrarPestania('domicilio');
+
+      document.getElementById('modalCuenta').classList.add('hidden');
+      document.getElementById('contenido-app').classList.remove('hidden');
+      mostrarSeccion('tramite');
+
+      // Aquí podrías redirigir al formulario o mostrar el siguiente paso
+    }
+  }
+  </script>
 <!-- Sección nueva de carga de datos tras validar cuenta -->
 <!-- Footer -->
 <footer class="bg-[#0360ff] text-white py-4 fixed bottom-0 w-full z-50" style="background-color: #0360ff;">
@@ -1245,33 +1332,60 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 </script>
 <script>
+document.getElementById("cerrar-sesion").addEventListener("click", function () {
+  // Simula cerrar sesión redirigiendo al login
+  window.location.href = "/login.html";
+});
+</script><script>
+document.getElementById("cerrar-sesion").addEventListener("click", function () {
+  // Mostrar la pantalla de login
+  document.getElementById("pantalla-login").classList.remove("hidden");
+  // Ocultar la sección principal de la app
+  document.getElementById("contenido-app").classList.add("hidden");
+});
+</script>
+<div id="log-visual" style="position: fixed; bottom: 20px; right: 20px; background: #f0f0f0; border: 1px solid #ccc; padding: 1rem; font-family: sans-serif; font-size: 14px; max-width: 300px;"></div>
+
+<script>
+function logVisual(msg) {
+  const div = document.getElementById("log-visual");
+  const line = document.createElement("div");
+  line.textContent = "🔹 " + msg;
+  div.appendChild(line);
+  setTimeout(() => { line.remove(); }, 6000);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  const pantallaLogin = document.getElementById("pantalla-login");
-  const contenidoApp = document.getElementById("contenido-app");
+  const loginDiv = document.getElementById("pantalla-login");
+  const appDiv = document.getElementById("contenido-app");
   const cerrarSesion = document.getElementById("cerrar-sesion");
   const hoverSound = document.getElementById("hover-sound");
 
   if (hoverSound) {
     document.querySelectorAll(".hoverable").forEach(el => {
       el.addEventListener("mouseenter", () => {
-        hoverSound.play().catch(() => {});
+        hoverSound.play().then(() => {
+          logVisual("Sonido reproducido correctamente 🎵");
+        }).catch(err => {
+          logVisual("⚠️ Sonido bloqueado por el navegador");
+        });
       });
     });
   }
 
-  if (localStorage.getItem("sesionActiva") === "true") {
-    if (pantallaLogin) pantallaLogin.classList.add("hidden");
-    if (contenidoApp) contenidoApp.classList.remove("hidden");
-  } else {
-    if (pantallaLogin) pantallaLogin.classList.remove("hidden");
-    if (contenidoApp) contenidoApp.classList.add("hidden");
+  const sesion = localStorage.getItem("sesionActiva");
+  if (sesion === "true") {
+    loginDiv?.classList.add("hidden");
+    appDiv?.classList.remove("hidden");
+    logVisual("✅ Sesión detectada y restaurada");
   }
 
   if (cerrarSesion) {
     cerrarSesion.addEventListener("click", () => {
       localStorage.removeItem("sesionActiva");
-      if (pantallaLogin) pantallaLogin.classList.remove("hidden");
-      if (contenidoApp) contenidoApp.classList.add("hidden");
+      loginDiv?.classList.remove("hidden");
+      appDiv?.classList.add("hidden");
+      logVisual("✅ Sesión cerrada");
     });
   }
 });
@@ -1283,15 +1397,12 @@ function loginConUsuario() {
     localStorage.setItem("sesionActiva", "true");
     document.getElementById("pantalla-login").classList.add("hidden");
     document.getElementById("contenido-app").classList.remove("hidden");
+    logVisual("🔐 Login exitoso");
   } else {
     alert("Usuario o contraseña incorrectos.");
+    logVisual("❌ Login fallido");
   }
 }
 </script>
-<script>
-    function mostrarPestania() {
-      console.log("mostrarPestania llamada — función aún no implementada.");
-    }
-    </script>
 </body>
 </html>
